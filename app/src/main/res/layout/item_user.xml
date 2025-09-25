@@ -1,25 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardBackgroundColor="#DFFFD6"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_margin="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="#E3F2FD"> <!-- Fondo pastel para el CardView -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="12dp"
+        android:background="#ADD8E6"> <!-- Fondo azul claro para el contenido -->
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userImageView"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/nameTextView"
@@ -27,11 +30,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#333333"
-            android:fontFamily="sans-serif-medium"
-            tools:text="Usuario" />
+            android:textColor="#37474F"
+            tools:text="Nombre del Usuario" />
 
         <TextView
             android:id="@+id/emailTextView"
@@ -39,9 +41,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="4dp"
-            android:textSize="16sp"
-            android:textColor="#555555"
-            android:fontFamily="sans-serif-medium"
+            android:textColor="#4CAF50"
+            android:textSize="14sp"
+            android:textStyle="bold|italic"
             tools:text="correo" />
 
         <TextView
@@ -50,9 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="4dp"
-            android:textSize="16sp"
-            android:textColor="#555555"
-            android:fontFamily="sans-serif-medium"
+            android:textColor="#4CAF50"
+            android:textSize="14sp"
+            android:textStyle="bold|italic"
             tools:text="País" />
 
     </LinearLayout>

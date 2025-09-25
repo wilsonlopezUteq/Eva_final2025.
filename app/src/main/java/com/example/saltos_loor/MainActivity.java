@@ -9,26 +9,52 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.Serializable;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements UserAdapter.OnUserClickListener {
+public class MainActivity extends AppCompatActivity implements UserAdapter.OnUserClickListener, OnMapReadyCallback {
+
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Configurar mapa
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapFragment);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+
+        // Configurar lista de usuarios
         recyclerView = findViewById(R.id.usersRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         fetchUsers();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE); // ← Vista satelital
+
+        LatLng ecuador = new LatLng(-1.8312, -78.1834);
+        mMap.addMarker(new MarkerOptions().position(ecuador).title("Ecuador"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ecuador, 5));
     }
 
     private void fetchUsers() {
@@ -42,31 +68,23 @@ public class MainActivity extends AppCompatActivity implements UserAdapter.OnUse
                     List<User> users = response.body().getUsers();
                     userAdapter = new UserAdapter(users, MainActivity.this);
                     recyclerView.setAdapter(userAdapter);
-                    // Nueva frase de Log:
-                    Log.d("DATA_LOAD", "Datos de usuarios cargados satisfactoriamente. Total de ítems: " + users.size());
+                    Log.d("API_RESPONSE", "Usuarios recibidos: " + users.size());
                 } else {
-                    // Nueva frase de Toast:
-                    Toast.makeText(MainActivity.this, "La fuente de datos devolvió un resultado inválido", Toast.LENGTH_SHORT).show();
-                    // Nueva frase de Log:
-                    Log.e("API_STATUS", "Respuesta recibida correctamente (2xx), pero el cuerpo de la respuesta es ilegible o vacío.");
+                    Toast.makeText(MainActivity.this, "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
+                    Log.e("API_ERROR", "Respuesta vacía o no exitosa");
                 }
             }
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                // Nueva frase de Toast:
-                Toast.makeText(MainActivity.this, "Conexión interrumpida. No se pudo obtener la información.", Toast.LENGTH_SHORT).show();
-                // Nueva frase de Log:
-                Log.e("NETWORK_FAIL", "Error de conectividad al intentar obtener el listado de usuarios", t);
+                Toast.makeText(MainActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                Log.e("API_ERROR", "Error al obtener usuarios", t);
             }
         });
     }
 
     @Override
     public void onUserClick(User user) {
-        // Nueva frase de Log:
-        Log.d("ACTIVITY_JUMP", "Lanzando vista de detalle para: " + user.getName().getFirst());
-
         Intent intent = new Intent(MainActivity.this, UserDetailActivity.class);
         intent.putExtra("USER", user);
         startActivity(intent);
